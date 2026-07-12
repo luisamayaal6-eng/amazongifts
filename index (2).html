@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TopPicks — Lo que sí vale la pena comprar</title>
+<meta name="description" content="Selección honesta de productos que realmente valen la pena: belleza, salud, cocina, gadgets y tech.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Space+Mono:wght@400;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0F3D3E;
+    --bg-panel: #123F41;
+    --bg-panel-2: #0B2E2F;
+    --accent: #F2A93B;
+    --accent-dim: #C98A2C;
+    --cream: #F5EFE6;
+    --muted: #9FC7C3;
+    --line: rgba(245,239,230,0.14);
+    --radius: 14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--cream);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Fraunces', serif;font-weight:600;letter-spacing:-0.01em;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(15,61,62,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .headbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 24px;max-width:1100px;margin:0 auto;
+  }
+  .logo{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;letter-spacing:-0.02em;}
+  .logo span{color:var(--accent);}
+  .nav-cats{display:flex;gap:6px;flex-wrap:wrap;}
+  .nav-cats button{
+    font-family:'Space Mono',monospace;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.06em;
+    background:transparent;border:1px solid var(--line);color:var(--muted);
+    padding:7px 13px;border-radius:100px;cursor:pointer;transition:all .18s ease;
+  }
+  .nav-cats button:hover{border-color:var(--accent);color:var(--cream);}
+  .nav-cats button.active{background:var(--accent);border-color:var(--accent);color:#1a1a1a;font-weight:700;}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:72px 0 56px;position:relative;overflow:hidden;}
+  .hero-grid{display:grid;grid-template-columns:1.3fr 0.8fr;gap:40px;align-items:center;}
+  .eyebrow{
+    font-family:'Space Mono',monospace;font-size:0.75rem;color:var(--accent);
+    text-transform:uppercase;letter-spacing:0.12em;margin-bottom:16px;display:block;
+  }
+  .hero h1{font-size:clamp(2.2rem, 5vw, 3.6rem);line-height:1.05;margin-bottom:20px;}
+  .hero h1 em{font-style:italic;color:var(--accent);}
+  .hero p{font-size:1.08rem;color:var(--muted);max-width:480px;margin-bottom:28px;}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{
+    display:inline-block;padding:14px 26px;border-radius:100px;font-weight:600;font-size:0.95rem;
+    cursor:pointer;border:none;transition:transform .15s ease;
+  }
+  .btn-primary{background:var(--accent);color:#1a1a1a;}
+  .btn-primary:hover{transform:translateY(-2px);}
+  .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--cream);}
+  .btn-ghost:hover{border-color:var(--accent);}
+
+  /* signature stamp badge */
+  .stamp{
+    width:190px;height:190px;border-radius:50%;
+    border:2px dashed var(--accent);
+    display:flex;align-items:center;justify-content:center;
+    margin-left:auto;position:relative;
+    animation:spin 26s linear infinite;
+  }
+  .stamp-inner{
+    width:150px;height:150px;border-radius:50%;background:var(--accent);
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    color:#1a1a1a;font-family:'Space Mono',monospace;font-weight:700;font-size:0.85rem;
+    transform:rotate(-14deg);line-height:1.3;letter-spacing:0.02em;
+    animation:counterspin 26s linear infinite;
+  }
+  @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  @keyframes counterspin{from{transform:rotate(-14deg) rotate(0deg);}to{transform:rotate(-14deg) rotate(-360deg);}}
+  @media (prefers-reduced-motion: reduce){ .stamp,.stamp-inner{animation:none;} }
+
+  /* ---------- SEARCH ---------- */
+  .searchbar{padding:0 0 40px;}
+  .searchbar input{
+    width:100%;padding:16px 20px;border-radius:100px;border:1px solid var(--line);
+    background:var(--bg-panel);color:var(--cream);font-family:'Work Sans',sans-serif;font-size:1rem;
+  }
+  .searchbar input::placeholder{color:var(--muted);}
+  .searchbar input:focus{outline:2px solid var(--accent);outline-offset:2px;}
+
+  /* ---------- SECTIONS ---------- */
+  section.cat-section{padding:36px 0;}
+  .cat-heading{display:flex;align-items:baseline;gap:14px;margin-bottom:24px;}
+  .cat-heading h2{font-size:1.7rem;}
+  .cat-heading .count{font-family:'Space Mono',monospace;color:var(--muted);font-size:0.8rem;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(240px,1fr));gap:20px;}
+
+  /* product ticket card w/ perforation notch */
+  .card{
+    background:var(--bg-panel);
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    overflow:hidden;position:relative;
+    display:flex;flex-direction:column;
+    transition:transform .18s ease, border-color .18s ease;
+  }
+  .card:hover{transform:translateY(-4px);border-color:var(--accent);}
+  .card::before, .card::after{
+    content:"";position:absolute;top:50%;width:20px;height:20px;
+    background:var(--bg);border-radius:50%;transform:translateY(-50%);
+  }
+  .card::before{left:-10px;}
+  .card::after{right:-10px;}
+  .card-img{
+    width:100%;aspect-ratio:1/1;background:var(--bg-panel-2);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Mono',monospace;color:var(--muted);font-size:0.75rem;
+    overflow:hidden;
+  }
+  .card-img img{width:100%;height:100%;object-fit:cover;}
+  .card-body{padding:18px;display:flex;flex-direction:column;gap:8px;flex:1;}
+  .card-tag{
+    font-family:'Space Mono',monospace;font-size:0.68rem;color:var(--accent);
+    text-transform:uppercase;letter-spacing:0.06em;
+  }
+  .card-body h3{font-size:1.05rem;line-height:1.3;}
+  .card-body p{font-size:0.88rem;color:var(--muted);flex:1;}
+  .card-foot{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-top:10px;padding-top:14px;border-top:1px dashed var(--line);
+  }
+  .price{font-family:'Space Mono',monospace;font-weight:700;color:var(--cream);}
+  .card-cta{
+    font-size:0.82rem;font-weight:600;background:var(--accent);color:#1a1a1a;
+    padding:9px 16px;border-radius:100px;
+  }
+  .card-cta:hover{background:var(--cream);}
+
+  /* ---------- FOOTER ---------- */
+  footer{border-top:1px solid var(--line);padding:40px 0;margin-top:40px;}
+  .foot-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;color:var(--muted);font-size:0.85rem;}
+  .disclosure{
+    font-size:0.78rem;color:var(--muted);max-width:640px;margin-top:14px;line-height:1.6;
+  }
+
+  @media (max-width:760px){
+    .hero-grid{grid-template-columns:1fr;}
+    .stamp{margin:0 auto;}
+    .nav-cats{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="headbar">
+    <div class="logo">Top<span>Picks</span></div>
+    <nav class="nav-cats" id="navCats"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">Curado, no vendido</span>
+        <h1>Lo que <em>sí</em> vale la pena comprar.</h1>
+        <p>Probamos, comparamos y filtramos el ruido. Acá solo llegan los productos que de verdad recomendaríamos a un amigo — belleza, salud, cocina, gadgets y tech.</p>
+        <div class="hero-cta">
+          <a href="#belleza" class="btn btn-primary">Ver selección</a>
+          <a href="#footer-info" class="btn btn-ghost">Cómo elegimos</a>
+        </div>
+      </div>
+      <div class="stamp">
+        <div class="stamp-inner">100% <br>PICKS <br>REALES</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="searchbar">
+    <input type="text" id="searchInput" placeholder="Buscar producto (ej. cafetera, crema, audífonos)...">
+  </div>
+
+  <main id="catSections"></main>
+</div>
+
+<footer id="footer-info">
+  <div class="wrap">
+    <div class="foot-row">
+      <span>© <span id="year"></span> TopPicks</span>
+      <span>Hecho por Luis · DataenCorto</span>
+    </div>
+    <p class="disclosure">
+      Como Afiliado de Amazon, gano por compras que califican. Esto no tiene costo extra para vos:
+      el precio que pagás es el mismo, y una parte pequeña de esa compra llega a nosotros como comisión
+      por recomendarte el producto.
+    </p>
+  </div>
+</footer>
+
+<script>
+/* =========================================================
+   CONFIG — actualizá esto cuando tengas tu tag de Amazon
+   ========================================================= */
+const AMAZON_TAG = "TU-TAG-20"; // reemplazar cuando Amazon Associates te lo dé
+
+/* =========================================================
+   PRODUCTOS — agregá/edita productos acá.
+   category debe coincidir con una key de CATEGORIES abajo.
+   link: pegá la URL completa del producto en Amazon (sin tag,
+   el script se lo agrega automático).
+   ========================================================= */
+const CATEGORIES = {
+  belleza: "Belleza",
+  salud:   "Salud",
+  cocina:  "Cocina",
+  gadgets: "Gadgets",
+  tech:    "Tech"
+};
+
+const PRODUCTS = [
+  {
+    category:"belleza",
+    name:"Sérum de vitamina C facial",
+    desc:"Ilumina el tono de piel y ayuda con manchas leves. Textura ligera, no deja grasosa la piel.",
+    price:"$14.99",
+    link:"https://www.amazon.com/dp/EJEMPLO1",
+    img:""
+  },
+  {
+    category:"salud",
+    name:"Báscula digital de baño",
+    desc:"Medición precisa, pantalla grande, batería de larga duración.",
+    price:"$19.99",
+    link:"https://www.amazon.com/dp/EJEMPLO2",
+    img:""
+  },
+  {
+    category:"cocina",
+    name:"Set de cuchillos de cocina",
+    desc:"Acero inoxidable, buen balance, incluye base de almacenamiento.",
+    price:"$34.99",
+    link:"https://www.amazon.com/dp/EJEMPLO3",
+    img:""
+  },
+  {
+    category:"gadgets",
+    name:"Mini proyector portátil",
+    desc:"Conexión inalámbrica, ideal para noches de película en casa.",
+    price:"$59.99",
+    link:"https://www.amazon.com/dp/EJEMPLO4",
+    img:""
+  },
+  {
+    category:"tech",
+    name:"Audífonos inalámbricos con cancelación de ruido",
+    desc:"Batería de 20+ horas, buena para trabajo y ejercicio.",
+    price:"$29.99",
+    link:"https://www.amazon.com/dp/EJEMPLO5",
+    img:""
+  }
+];
+
+/* ========================================================= */
+
+function withTag(url){
+  try{
+    const u = new URL(url);
+    u.searchParams.set("tag", AMAZON_TAG);
+    return u.toString();
+  }catch(e){ return url; }
+}
+
+function renderNav(){
+  const nav = document.getElementById('navCats');
+  nav.innerHTML = Object.entries(CATEGORIES).map(([key,label]) =>
+    `<button data-cat="${key}" onclick="scrollToCat('${key}')">${label}</button>`
+  ).join('');
+}
+
+function scrollToCat(key){
+  document.getElementById(key)?.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function renderSections(filterText=""){
+  const main = document.getElementById('catSections');
+  const q = filterText.trim().toLowerCase();
+  main.innerHTML = "";
+
+  Object.entries(CATEGORIES).forEach(([key,label]) => {
+    let items = PRODUCTS.filter(p => p.category === key);
+    if(q){
+      items = items.filter(p =>
+        p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)
+      );
+    }
+    if(items.length === 0) return;
+
+    const section = document.createElement('section');
+    section.className = 'cat-section';
+    section.id = key;
+    section.innerHTML = `
+      <div class="cat-heading">
+        <h2>${label}</h2>
+        <span class="count">${items.length} producto${items.length!==1?'s':''}</span>
+      </div>
+      <div class="grid">
+        ${items.map(p => `
+          <div class="card">
+            <div class="card-img">${p.img ? `<img src="${p.img}" alt="${p.name}">` : 'Foto próximamente'}</div>
+            <div class="card-body">
+              <span class="card-tag">${label}</span>
+              <h3>${p.name}</h3>
+              <p>${p.desc}</p>
+              <div class="card-foot">
+                <span class="price">${p.price}</span>
+                <a class="card-cta" href="${withTag(p.link)}" target="_blank" rel="nofollow sponsored noopener">Ver en Amazon</a>
+              </div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    main.appendChild(section);
+  });
+
+  if(main.innerHTML === ""){
+    main.innerHTML = `<p style="color:var(--muted);padding:40px 0;">No encontramos productos con ese término.</p>`;
+  }
+}
+
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  renderSections(e.target.value);
+});
+
+document.getElementById('year').textContent = new Date().getFullYear();
+
+renderNav();
+renderSections();
+</script>
+
+</body>
+</html>
