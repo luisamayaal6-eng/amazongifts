@@ -87,6 +87,28 @@
   }
   .issue-mark small{font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;}
 
+  /* ---------- PLATFORM TABS ---------- */
+  .platform-tabs{display:flex;gap:0;border-bottom:1px solid var(--ink);margin-bottom:24px;}
+  .platform-tabs button{
+    font-family:'Fraunces',serif;font-size:1.4rem;font-style:italic;font-weight:400;
+    background:none;border:none;cursor:pointer;color:var(--muted);
+    padding:10px 28px 14px 0;margin-right:28px;border-bottom:2px solid transparent;
+    transition:all .2s ease;
+  }
+  .platform-tabs button:hover{color:var(--ink);}
+  .platform-tabs button.active{color:var(--ink);border-bottom-color:var(--accent);}
+  .platform-tabs .plat-count{font-family:'Space Mono',monospace;font-size:0.65rem;font-style:normal;color:var(--muted);margin-left:8px;}
+
+  /* ---------- CATEGORY CHIPS ---------- */
+  .cat-chips{display:flex;gap:10px;flex-wrap:wrap;padding-bottom:36px;}
+  .cat-chips button{
+    font-family:'Jost',sans-serif;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.05em;
+    background:transparent;border:1px solid var(--line);color:var(--muted);
+    padding:8px 16px;cursor:pointer;transition:all .18s ease;
+  }
+  .cat-chips button:hover{border-color:var(--ink);color:var(--ink);}
+  .cat-chips button.active{background:var(--ink);border-color:var(--ink);color:var(--bg);}
+
   /* ---------- SEARCH ---------- */
   .searchbar{padding:40px 0 48px;}
   .searchbar input{
@@ -128,10 +150,9 @@
   .card-body h3{font-size:1.1rem;line-height:1.35;font-weight:500;}
   .card-body p{font-size:0.87rem;color:var(--muted);flex:1;}
   .card-foot{
-    display:flex;align-items:center;justify-content:space-between;
+    display:flex;align-items:center;justify-content:flex-end;
     margin-top:14px;padding-top:16px;border-top:1px solid var(--line);
   }
-  .price{font-family:'Fraunces',serif;font-style:italic;font-weight:500;color:var(--ink);font-size:1.05rem;}
   .card-cta{
     font-size:0.75rem;font-weight:500;color:var(--ink);
     text-transform:uppercase;letter-spacing:0.06em;
@@ -158,7 +179,6 @@
 <header>
   <div class="headbar">
     <div class="logo">Top<span>Picks</span></div>
-    <nav class="nav-cats" id="navCats"></nav>
   </div>
 </header>
 
@@ -170,7 +190,7 @@
         <h1>Encontrá lo que <em>todos</em> están buscando.</h1>
         <p>Realizamos pruebas de una amplia variedad de productos para filtrar lo mejor del mercado, y de esta manera garantizar la mejor calidad en los productos que recomendamos.</p>
         <div class="hero-cta">
-          <a href="#belleza" class="btn btn-primary">Ver selección</a>
+          <a href="#platformTabs" class="btn btn-primary">Ver selección</a>
           <a href="#footer-info" class="btn btn-ghost">Cómo elegimos</a>
         </div>
       </div>
@@ -180,6 +200,9 @@
       </div>
     </div>
   </section>
+
+  <div class="platform-tabs" id="platformTabs"></div>
+  <div class="cat-chips" id="catChips"></div>
 
   <div class="searchbar">
     <input type="text" id="searchInput" placeholder="Buscar producto (ej. cafetera, crema, audífonos)...">
@@ -205,70 +228,112 @@
 
 <script>
 /* =========================================================
-   CONFIG — actualizá esto cuando tengas tu tag de Amazon
+   CONFIG
+   - AMAZON_TAG: tu tag de Amazon Associates.
+   - TEMU_LINKS_ARE_FINAL: los links de Temu pegalos YA con tu
+     código de afiliado (generados con el conversor de Temu),
+     porque Temu no usa un parámetro simple como Amazon.
    ========================================================= */
-const AMAZON_TAG = "TU-TAG-20"; // reemplazar cuando Amazon Associates te lo dé
+const AMAZON_TAG = "secureshops-20";
 
 /* =========================================================
-   PRODUCTOS — agregá/edita productos acá.
-   category debe coincidir con una key de CATEGORIES abajo.
-   link: pegá la URL completa del producto en Amazon (sin tag,
-   el script se lo agrega automático).
+   PLATAFORMAS
    ========================================================= */
-const CATEGORIES = {
+const PLATFORMS = {
+  amazon: "Amazon",
+  temu:   "Temu"
+};
+
+/* =========================================================
+   ETIQUETAS DE CATEGORÍA (opcional)
+   Si agregás una categoría nueva que no está en esta lista,
+   el sitio igual la muestra usando el nombre tal cual la escribas.
+   ========================================================= */
+const CATEGORY_LABELS = {
+  tech:    "Tech",
+  gadgets: "Gadgets",
+  mujeres: "Mujeres",
   belleza: "Belleza",
   salud:   "Salud",
   cocina:  "Cocina",
-  gadgets: "Gadgets",
-  tech:    "Tech"
+  hogar:   "Hogar"
 };
 
+/* =========================================================
+   PRODUCTOS
+   - platform: "amazon" o "temu"
+   - category: cualquier texto (tech, gadgets, mujeres, belleza, salud...)
+   - link: para Amazon pegá la URL normal del producto (se le
+     agrega el tag automático). Para Temu pegá el link YA
+     generado con tu código de afiliado.
+   - img: ruta o URL de la imagen del producto
+   - Sin precio: son variantes dentro de Amazon/Temu.
+   ========================================================= */
 const PRODUCTS = [
   {
+    platform:"amazon",
     category:"belleza",
-    name:"Sérum de vitamina C facial",
-    desc:"Ilumina el tono de piel y ayuda con manchas leves. Textura ligera, no deja grasosa la piel.",
-    price:"$14.99",
-    link:"https://www.amazon.com/dp/EJEMPLO1",
-    img:""
+    name:"Rare Beauty — Aceite Labial Selena",
+    desc:"Aceite hidratante para labios con acabado brillante, de la línea de Selena Gomez para Rare Beauty.",
+    link:"https://www.amazon.com/-/es/Rare-Beauty-Selena-Aceite-Labial/dp/B0C1CFPH57?linkCode=ll2&tag=secureshops-20&linkId=7226cbeea08eb68fe59574f5894eac69&language=es_US&ref_=as_li_ss_tl",
+    img:"images/rare-beauty-lip-oil-selena.jpg"
   },
   {
-    category:"salud",
-    name:"Báscula digital de baño",
-    desc:"Medición precisa, pantalla grande, batería de larga duración.",
-    price:"$19.99",
-    link:"https://www.amazon.com/dp/EJEMPLO2",
-    img:""
+    platform:"amazon",
+    category:"belleza",
+    name:"Rare Beauty — Luminize (edición limitada)",
+    desc:"Iluminador líquido de edición limitada, acabado radiante y natural.",
+    link:"https://www.amazon.com/-/es/Rare-Beauty-Edici%C3%B3n-limitada-Luminize/dp/B0DH2W68HG?linkCode=ll2&tag=secureshops-20&linkId=a09a40a1635dc0c704c3755871fcc414&language=es_US&ref_=as_li_ss_tl",
+    img:"images/rare-beauty-luminize.jpg"
   },
   {
-    category:"cocina",
-    name:"Set de cuchillos de cocina",
-    desc:"Acero inoxidable, buen balance, incluye base de almacenamiento.",
-    price:"$34.99",
-    link:"https://www.amazon.com/dp/EJEMPLO3",
-    img:""
+    platform:"amazon",
+    category:"belleza",
+    name:"Rare Beauty — Colorete Luminoso Radiante",
+    desc:"Colorete líquido de larga duración con acabado luminoso y radiante.",
+    link:"https://www.amazon.com/-/es/Rare-Beauty-Colorete-Luminoso-Radiante/dp/B0CZJP5Y6K?linkCode=ll2&tag=secureshops-20&linkId=f3c085ac07b31a9d9329852fe7e16a93&language=es_US&ref_=as_li_ss_tl",
+    img:"images/rare-beauty-colorete.jpg"
   },
   {
-    category:"gadgets",
-    name:"Mini proyector portátil",
-    desc:"Conexión inalámbrica, ideal para noches de película en casa.",
-    price:"$59.99",
-    link:"https://www.amazon.com/dp/EJEMPLO4",
-    img:""
+    platform:"amazon",
+    category:"belleza",
+    name:"BIODANCE — Mascarilla Bio-Colágeno",
+    desc:"Mascarilla facial con bio-colágeno, ayuda a minimizar poros y mejorar la elasticidad de la piel.",
+    link:"https://www.amazon.com/BIODANCE-bio-col%C3%A1geno-mascarilla-minimizaci%C3%B3n-elasticidad/dp/B0B2RM68G2?linkCode=ll2&tag=secureshops-20&linkId=5b6257064bc1c688d69f9fa78634a8f3&language=es_US&ref_=as_li_ss_tl",
+    img:"images/biodance-mascarilla.webp"
   },
   {
-    category:"tech",
-    name:"Audífonos inalámbricos con cancelación de ruido",
-    desc:"Batería de 20+ horas, buena para trabajo y ejercicio.",
-    price:"$29.99",
-    link:"https://www.amazon.com/dp/EJEMPLO5",
-    img:""
+    platform:"amazon",
+    category:"belleza",
+    name:"Starface — Parches Hydro Stars",
+    desc:"Parches hidrocoloides para espinillas, ayudan a reducir el enrojecimiento mientras sanan.",
+    link:"https://www.amazon.com/Starface-Hydro-Stars-hidrocoloides-espinillas-enrojecimiento/dp/B0B4V88LMC?linkCode=ll2&tag=secureshops-20&linkId=463318601fc461f48176a1dfc5170b62&language=es_US&ref_=as_li_ss_tl",
+    img:"images/starface-hydro-stars.webp"
+  },
+  {
+    platform:"amazon",
+    category:"belleza",
+    name:"Kiko Milano — Brillo de Labios Hydra",
+    desc:"Brillo labial hidratante con acabado jugoso, de la marca italiana Kiko Milano.",
+    link:"https://www.amazon.com/-/es/Kiko-Milano-Hydra-Brillo-Labios/dp/B077DN2444?linkCode=ll2&tag=secureshops-20&linkId=7c24e199e309f2190583d3b5b688be44&language=es_US&ref_=as_li_ss_tl",
+    img:"images/kiko-milano-brillo.webp"
+  },
+  {
+    platform:"amazon",
+    category:"belleza",
+    name:"Sol de Janeiro — Fragancia Cheirosa para Cabello",
+    desc:"Bruma perfumada para cabello con la icónica fragancia Cheirosa de Sol de Janeiro.",
+    link:"https://www.amazon.com/Sol-Janeiro-Cheirosa-fragancia-cabello/dp/B0B1HB719V?linkCode=ll2&tag=secureshops-20&linkId=8d6ba0e73ba52c343586afaf2e17dd5f&language=es_US&ref_=as_li_ss_tl",
+    img:"images/sol-de-janeiro-cheirosa.webp"
   }
 ];
 
 /* ========================================================= */
 
-function withTag(url){
+let currentPlatform = "amazon";
+
+function withTag(url, platform){
+  if(platform !== "amazon") return url; // Temu: el link ya debe traer el código de afiliado
   try{
     const u = new URL(url);
     u.searchParams.set("tag", AMAZON_TAG);
@@ -276,15 +341,41 @@ function withTag(url){
   }catch(e){ return url; }
 }
 
-function renderNav(){
-  const nav = document.getElementById('navCats');
-  nav.innerHTML = Object.entries(CATEGORIES).map(([key,label]) =>
-    `<button data-cat="${key}" onclick="scrollToCat('${key}')">${label}</button>`
-  ).join('');
+function labelFor(catKey){
+  return CATEGORY_LABELS[catKey] || (catKey.charAt(0).toUpperCase() + catKey.slice(1));
 }
 
-function scrollToCat(key){
-  document.getElementById(key)?.scrollIntoView({behavior:'smooth', block:'start'});
+function renderPlatformTabs(){
+  const el = document.getElementById('platformTabs');
+  el.innerHTML = Object.entries(PLATFORMS).map(([key,label]) => {
+    const count = PRODUCTS.filter(p => p.platform === key).length;
+    return `<button data-plat="${key}" class="${key===currentPlatform?'active':''}" onclick="setPlatform('${key}')">${label}<span class="plat-count">${count}</span></button>`;
+  }).join('');
+}
+
+function setPlatform(key){
+  currentPlatform = key;
+  renderPlatformTabs();
+  renderChips();
+  renderSections(document.getElementById('searchInput').value);
+}
+
+let currentCat = "all";
+
+function renderChips(){
+  const el = document.getElementById('catChips');
+  const cats = [...new Set(PRODUCTS.filter(p => p.platform===currentPlatform).map(p => p.category))];
+  currentCat = "all";
+  el.innerHTML = `<button class="active" data-cat="all" onclick="setCat('all')">Todas</button>` +
+    cats.map(c => `<button data-cat="${c}" onclick="setCat('${c}')">${labelFor(c)}</button>`).join('');
+}
+
+function setCat(cat){
+  currentCat = cat;
+  document.querySelectorAll('.cat-chips button').forEach(b => {
+    b.classList.toggle('active', b.dataset.cat === cat);
+  });
+  renderSections(document.getElementById('searchInput').value);
 }
 
 function renderSections(filterText=""){
@@ -292,8 +383,13 @@ function renderSections(filterText=""){
   const q = filterText.trim().toLowerCase();
   main.innerHTML = "";
 
-  Object.entries(CATEGORIES).forEach(([key,label]) => {
-    let items = PRODUCTS.filter(p => p.category === key);
+  let pool = PRODUCTS.filter(p => p.platform === currentPlatform);
+  if(currentCat !== "all") pool = pool.filter(p => p.category === currentCat);
+
+  const cats = [...new Set(pool.map(p => p.category))];
+
+  cats.forEach(catKey => {
+    let items = pool.filter(p => p.category === catKey);
     if(q){
       items = items.filter(p =>
         p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q)
@@ -301,9 +397,10 @@ function renderSections(filterText=""){
     }
     if(items.length === 0) return;
 
+    const label = labelFor(catKey);
     const section = document.createElement('section');
     section.className = 'cat-section';
-    section.id = key;
+    section.id = `${currentPlatform}-${catKey}`;
     section.innerHTML = `
       <div class="cat-heading">
         <h2>${label}</h2>
@@ -318,8 +415,7 @@ function renderSections(filterText=""){
               <h3>${p.name}</h3>
               <p>${p.desc}</p>
               <div class="card-foot">
-                <span class="price">${p.price}</span>
-                <a class="card-cta" href="${withTag(p.link)}" target="_blank" rel="nofollow sponsored noopener">Ver en Amazon</a>
+                <a class="card-cta" href="${withTag(p.link, p.platform)}" target="_blank" rel="nofollow sponsored noopener">Ver en ${PLATFORMS[p.platform]}</a>
               </div>
             </div>
           </div>
@@ -340,7 +436,8 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
 
 document.getElementById('year').textContent = new Date().getFullYear();
 
-renderNav();
+renderPlatformTabs();
+renderChips();
 renderSections();
 </script>
 
